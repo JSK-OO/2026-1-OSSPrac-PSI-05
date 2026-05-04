@@ -1,9 +1,12 @@
+input.html
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <title>Input Form</title>
 </head>
+
 <body>
     <form action="/result" method="POST">
         <p>
@@ -17,7 +20,18 @@
             <input type="radio" name="gender" value="Male"> Male
             <input type="radio" name="gender" value="Female"> Female
         </p>
+        <p>
+            Major <input type="text" name="major">
+        </p>
+        <p>Programming Languages</p>
+        <p>
+            <input type="checkbox" name="languages" value="Python"> Python
+            <input type="checkbox" name="languages" value="Java"> Java
+            <input type="checkbox" name="languages" value="HTML"> HTML
+            <input type="checkbox" name="languages" value="C++"> C++
+        </p>
         <input type="submit" value="submit">
     </form>
 </body>
+
 </html>
