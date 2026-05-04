@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+    <div class="col-lg-8">
+        <a href="/" class="btn btn-sm btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left"></i> 뒤로 가기
+        </a>
+        
+        <div class="card custom-card overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-4 bg-body-secondary d-flex flex-column align-items-center justify-content-center p-4">
+                    <img src="{{ member.photo }}" class="rounded-circle img-thumbnail shadow-sm mb-3" style="width: 150px; height: 150px; object-fit: cover;" alt="profile">
+                    <h3 class="fw-bold mb-1">{{ member.name }}</h3>
+                    <p class="text-muted small">{{ member.department }} ({{ member.student_id }})</p>
+                    
+                    <!-- 소셜/연락처 아이콘 -->
+                    <div class="d-flex gap-3 mt-2">
+                        <a href="{{ member.github }}" target="_blank" class="text-body fs-4" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:{{ member.email }}" class="text-body fs-4" title="Email"><i class="fas fa-envelope"></i></a>
+                        <a href="{{ member.portfolio }}" target="_blank" class="text-body fs-4" title="Portfolio"><i class="fas fa-link"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-8 p-4 d-flex flex-column justify-content-center">
+                    <h5 class="text-primary fw-bold mb-3">{{ member.role }}</h5>
+                    
+                    <!-- 양쪽 정렬(text-justify) 적용된 소개글 -->
+                    <p class="text-justify mb-4 text-body-secondary lh-lg">
+                        {{ member.intro }}
+                    </p>
+                    
+                    <h6 class="fw-bold border-bottom pb-2 mb-3">🔥 기술 스택 (Tech Stack)</h6>
+                    <div class="d-flex flex-wrap gap-3 mb-4 fs-1">
+                        <!-- 파이썬 리스트에 적힌 기술을 Devicon 로고로 렌더링 -->
+                        {% for tech in member.languages %}
+                            <i class="devicon-{{ tech }}-plain colored" title="{{ tech }}"></i>
+                        {% endfor %}
+                    </div>
+
+                    <h6 class="fw-bold border-bottom pb-2 mb-3">🛠️ 주요 기여도 (Contribution)</h6>
+                    <p class="text-justify text-body-secondary mb-0">
+                        {{ member.contribution }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
