@@ -1,12 +1,48 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>결과 확인</title>
-</head>
-<body>
-    <h1>처리 결과 페이지</h1>
-    <p>입력된 데이터의 결과를 보여주는 화면입니다.</p>
-    <a href="/">홈으로 돌아가기</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-success text-white text-center py-4 rounded-top">
+                    <h3 class="mb-0 fw-bold">🎉 제출 완료!</h3>
+                    <p class="mb-0 mt-2 text-light">입력하신 데이터가 성공적으로 전달되었습니다.</p>
+                </div>
+                
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <h4 class="fw-bold mb-4 border-bottom pb-2">입력 결과 확인</h4>
+                    
+                    <ul class="list-group list-group-flush fs-5">
+                        <li class="list-group-item py-3">
+                            <strong>👤 Name:</strong> {{ member.name }}
+                        </li>
+                        <li class="list-group-item py-3">
+                            <strong>🎓 Student Number:</strong> {{ member.student_id }}
+                        </li>
+                        <li class="list-group-item py-3">
+                            <strong>🚻 Gender:</strong> {{ member.gender }}
+                        </li>
+                        <li class="list-group-item py-3">
+                            <strong>🏫 Major:</strong> {{ member.department }}
+                        </li>
+                        <li class="list-group-item py-3">
+                            <strong>💻 Programming Languages:</strong> 
+                            {% if member.languages %}
+                                <!-- 리스트 형태로 온 언어들을 쉼표로 연결해서 보여줍니다 -->
+                                {{ member.languages | join(', ') }}
+                            {% else %}
+                                선택 안 함
+                            {% endif %}
+                        </li>
+                    </ul>
+                    
+                    <div class="d-grid mt-5">
+                        <a href="/" class="btn btn-outline-secondary btn-lg fw-bold">홈으로 돌아가기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

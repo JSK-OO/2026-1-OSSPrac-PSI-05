@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -80,23 +80,33 @@ def member_detail(member_id):
         return render_template('member.html', member=member)
     return "팀원을 찾을 수 없습니다.", 404
 
-@app.route('/input')
+@app.route('/input', methods=['GET', 'POST'])
 def input_page():
+    if request.method == 'POST':
+        user_name = request.form.get('userName')
+        user_email = request.form.get('userEmail')
+        message = request.form.get('message')
+        
+        print(f"💡 [새로운 입력] 이름: {user_name}, 이메일: {user_email}, 내용: {message}")
+        
+        return redirect(url_for('index'))
+    
     return render_template('input.html')
 
-@app.route('/contact')
-def contact_page():
-    return render_template('contact.html')
 
 @app.route('/result', methods=['POST'])
 def result_page():
-    # 입력만 받고 기존 리스트에 추가하지 않음 (고정 유지 목적)
+  
     new_member = {
         "name": request.form.get('name'),
-        "student_id": request.form.get('student_id'),
+        
+        "student_id": request.form.get('student_number'), 
+        
         "gender": request.form.get('gender'),
-        "department": request.form.get('department'),
-        "languages": request.form.get('languages'),
+        
+        "department": request.form.get('major'),
+        
+        "languages": request.form.getlist('languages'), 
     }
     return render_template('result.html', member=new_member)
 
