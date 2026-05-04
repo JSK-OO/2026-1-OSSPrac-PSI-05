@@ -100,5 +100,10 @@ def result_page():
     }
     return render_template('result.html', member=new_member)
 
+# contact.html을 렌더링하기 위한 라우트 추가
+@app.route('/contact')
+def contact_page():
+    return render_template('contact.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
