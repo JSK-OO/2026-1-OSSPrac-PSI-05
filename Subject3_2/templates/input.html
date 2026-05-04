@@ -1,33 +1,80 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>Input Form</title>
-</head>
-<body>
-    <form action="/result" method="POST">
-        <p>
-            Name <input type="text" name="name">
-        </p>
-        <p>
-            Student Number <input type="text" name="student_number">
-        </p>
-        <p>Gender</p>
-        <p>
-            <input type="radio" name="gender" value="Male"> Male
-            <input type="radio" name="gender" value="Female"> Female
-        </p>
-        <p>
-            Major <input type="text" name="major">
-        </p>
-        <p>Programming Languages</p>
-        <p>
-            <input type="checkbox" name="languages" value="Python"> Python
-            <input type="checkbox" name="languages" value="Java"> Java
-            <input type="checkbox" name="languages" value="HTML"> HTML
-            <input type="checkbox" name="languages" value="C++"> C++
-        </p>
-        <input type="submit" value="submit">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- 기존 디자인과 통일된 카드형 폼 -->
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-dark text-white text-center py-4 rounded-top">
+                    <h3 class="mb-0 fw-bold">📝 정보 입력하기</h3>
+                </div>
+                
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <!-- 액션과 메소드는 주신 그대로 유지 -->
+                    <form action="/result" method="POST">
+                        
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-bold">Name</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        
+                        <!-- Student Number -->
+                        <div class="mb-3">
+                            <label for="student_number" class="form-label fw-bold">Student Number</label>
+                            <input type="text" class="form-control" id="student_number" name="student_number">
+                        </div>
+                        
+                        <!-- Gender (라디오 버튼) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Gender</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="genderMale" value="Male">
+                                <label class="form-check-label" for="genderMale">Male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="Female">
+                                <label class="form-check-label" for="genderFemale">Female</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Major -->
+                        <div class="mb-4">
+                            <label for="major" class="form-label fw-bold">Major</label>
+                            <input type="text" class="form-control" id="major" name="major">
+                        </div>
+                        
+                        <!-- Programming Languages (체크박스) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold d-block">Programming Languages</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langPython" value="Python">
+                                <label class="form-check-label" for="langPython">Python</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langJava" value="Java">
+                                <label class="form-check-label" for="langJava">Java</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langHTML" value="HTML">
+                                <label class="form-check-label" for="langHTML">HTML</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langCpp" value="C++">
+                                <label class="form-check-label" for="langCpp">C++</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit -->
+                        <div class="d-grid mt-4">
+                            <input type="submit" class="btn btn-dark btn-lg fw-bold" value="submit">
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
