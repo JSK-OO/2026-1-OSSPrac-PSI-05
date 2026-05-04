@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center py-4 rounded-top">
+                    <h3 class="mb-0 fw-bold">✏️ 팀원 정보 수정</h3>
+                </div>
+                
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form action="/edit/{{ member.id }}" method="POST">
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-bold">Name (이름)</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ member.name }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="student_number" class="form-label fw-bold">Student Number (학번)</label>
+                            <input type="text" class="form-control" id="student_number" name="student_number" value="{{ member.student_id }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Gender (성별)</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="genderMale" value="남성" {% if member.gender in ['Male', '남성'] %}checked{% endif %}>
+                                <label class="form-check-label" for="genderMale">Male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="여성" {% if member.gender in ['Female', '여성'] %}checked{% endif %}>
+                                <label class="form-check-label" for="genderFemale">Female</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="major" class="form-label fw-bold">Major (학과)</label>
+                            <input type="text" class="form-control" id="major" name="major" value="{{ member.department }}">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold d-block">Programming Languages (사용 언어)</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langPython" value="Python" {% if 'python' in member.languages %}checked{% endif %}>
+                                <label class="form-check-label" for="langPython">Python</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langJava" value="Java" {% if 'java' in member.languages %}checked{% endif %}>
+                                <label class="form-check-label" for="langJava">Java</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langHTML" value="HTML" {% if 'html' in member.languages or 'html5' in member.languages %}checked{% endif %}>
+                                <label class="form-check-label" for="langHTML">HTML</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="languages" id="langCpp" value="C++" {% if 'c++' in member.languages or 'cplusplus' in member.languages %}checked{% endif %}>
+                                <label class="form-check-label" for="langCpp">C++</label>
+                            </div>
+                        </div>
+
+                        <!-- 👇 새롭게 추가된 프로필 사진 URL 입력 칸 👇 -->
+                        <div class="mb-4">
+                            <label for="photo" class="form-label fw-bold">Profile Photo URL (사진 링크)</label>
+                            <input type="text" class="form-control" id="photo" name="photo" value="{{ member.photo }}" placeholder="예: https://example.com/myphoto.jpg">
+                            <div class="form-text">새로운 사진의 인터넷 주소(URL)를 입력해 주세요.</div>
+                        </div>
+
+                        <!-- 👇 새롭게 추가된 자기소개 수정 칸 👇 -->
+                        <div class="mb-5">
+                            <label for="intro" class="form-label fw-bold">Introduction (자기소개)</label>
+                            <textarea class="form-control" id="intro" name="intro" rows="4">{{ member.intro }}</textarea>
+                        </div>
+                        
+                        <div class="d-grid mt-4 gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">수정 완료</button>
+                            <a href="/member/{{ member.id }}" class="btn btn-outline-secondary">취소</a>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
