@@ -3,10 +3,26 @@
 {% block content %}
 <div class="row justify-content-center fade-in-up">
     <div class="col-lg-8">
-        <a href="/" class="btn btn-sm btn-outline-secondary mb-4">
-            <i class="fas fa-arrow-left"></i> 뒤로 가기
-        </a>
-        
+        <div class="d-flex justify-content-between mb-4">
+            <a href="/" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> 뒤로 가기
+            </a>
+            
+            <!-- 수정과 삭제 버튼을 오른쪽으로 묶어줍니다 -->
+            <div>
+                <a href="/edit/{{ member.id }}" class="btn btn-sm btn-outline-primary me-2">
+                    <i class="fas fa-edit"></i> 수정하기
+                </a>
+                
+                <!-- 삭제는 안전을 위해 POST 폼(form)으로 전송하며, 자바스크립트로 경고창을 띄웁니다. -->
+                <form action="/delete/{{ member.id }}" method="POST" class="d-inline" onsubmit="return confirm('정말 이 팀원을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash-alt"></i> 삭제하기
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <div class="card custom-card overflow-hidden">
             <div class="row g-0">
                 <div class="col-md-4 bg-body-secondary d-flex flex-column align-items-center justify-content-center p-4">
