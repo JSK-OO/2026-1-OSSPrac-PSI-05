@@ -13,16 +13,16 @@ DEFAULT_MEMBERS = [
     {
         "id": 1,
         "name": "김양우",
-        "student_id": "20245678",
+        "student_id": "2022110481",
         "gender": "남성",
-        "department": "컴퓨터공학과",
+        "department": "통계학과",
         "languages": ["python", "cplusplus", "java", "matlab"],
         "role": "백엔드 개발 및 서버 아키텍처 설계",
         "intro": "시스템 프로그래밍과 로우레벨 아키텍처에 관심이 많은 개발자입니다. 전체적인 시스템 구조 설계와 안정적인 서버 구축을 담당하고 있습니다.",
         "contribution": "Flask 기반의 REST API 설계 및 구현, 데이터베이스 모델링, 로깅 및 예외 처리 시스템 구축",
         "photo": "/static/img/member1.png",
         "github": "https://github.com/kimyangwoo",
-        "email": "yangwoo@example.com",
+        "email": "yangwoo918@gmail.com",
         "portfolio": "https://yangwoo.dev"
     },
     {
