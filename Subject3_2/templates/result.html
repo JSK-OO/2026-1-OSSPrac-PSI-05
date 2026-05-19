@@ -1,12 +1,121 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>결과 확인</title>
-</head>
-<body>
-    <h1>처리 결과 페이지</h1>
-    <p>입력된 데이터의 결과를 보여주는 화면입니다.</p>
-    <a href="/">홈으로 돌아가기</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .result-hero {
+        text-align: center;
+        padding: 4rem 0 2rem;
+    }
+    .result-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+    .result-card {
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    [data-bs-theme="dark"] .result-card {
+        border-color: rgba(255,255,255,0.06);
+    }
+    .result-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: #fff;
+        padding: 2rem;
+        text-align: center;
+    }
+    .result-header .check-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(232,101,26,0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--orange-light);
+        margin-bottom: 1rem;
+    }
+    .result-body {
+        padding: 2rem;
+    }
+    .result-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    [data-bs-theme="dark"] .result-row {
+        border-color: rgba(255,255,255,0.05);
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .result-value {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    .lang-pill {
+        display: inline-block;
+        background: var(--orange-subtle);
+        color: var(--orange);
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 3px 12px;
+        border-radius: 50px;
+        margin: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 550px;">
+    <div class="result-hero reveal">
+        <h1>Registration <span class="text-orange">Complete</span></h1>
+        <p class="text-muted mt-2">Here's a summary of your submitted profile.</p>
+    </div>
+
+    <div class="result-card reveal reveal-delay-1">
+        <div class="result-header">
+            <div class="check-icon"><i class="fas fa-check"></i></div>
+            <h5 class="fw-bold mb-1">{{ member.name }}</h5>
+            <p class="small opacity-75 mb-0">{{ member.department }}</p>
+        </div>
+        <div class="result-body">
+            <div class="result-row">
+                <span class="result-label">Student ID</span>
+                <span class="result-value">{{ member.student_id }}</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Gender</span>
+                <span class="result-value">{{ member.gender }}</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Department</span>
+                <span class="result-value">{{ member.department }}</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Languages</span>
+                <span class="result-value">
+                    {% for lang in member.languages %}
+                    <span class="lang-pill">{{ lang }}</span>
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 reveal reveal-delay-2">
+        <a href="/" class="btn btn-outline-orange">
+            <i class="fas fa-arrow-left me-1"></i> Back to Team
+        </a>
+    </div>
+</div>
+{% endblock %}

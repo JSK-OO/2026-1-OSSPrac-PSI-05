@@ -1,21 +1,26 @@
-from flask import Flask, render_template, request
+import os
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 app = Flask(__name__)
+app.secret_key = 'oss-team-secret-key-2026'
 
-# 확장된 팀원 정보 데이터[cite: 1]
-team_members = [
+UPLOAD_FOLDER = os.path.join(app.static_folder, 'img')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# 기본 팀원 데이터 (로컬 이미지 사용)
+DEFAULT_MEMBERS = [
     {
         "id": 1,
         "name": "김양우",
         "student_id": "20245678",
         "gender": "남성",
         "department": "컴퓨터공학과",
-        # Devicon 로고 클래스 매핑을 위해 영어 소문자/정확한 명칭 사용
         "languages": ["python", "cplusplus", "java", "matlab"],
         "role": "백엔드 개발 및 서버 아키텍처 설계",
         "intro": "시스템 프로그래밍과 로우레벨 아키텍처에 관심이 많은 개발자입니다. 전체적인 시스템 구조 설계와 안정적인 서버 구축을 담당하고 있습니다.",
         "contribution": "Flask 기반의 REST API 설계 및 구현, 데이터베이스 모델링, 로깅 및 예외 처리 시스템 구축",
-        "photo": "https://randomuser.me/api/portraits/men/32.jpg", # 가상 인물 사진(남)
+        "photo": "/static/img/member1.png",
         "github": "https://github.com/kimyangwoo",
         "email": "yangwoo@example.com",
         "portfolio": "https://yangwoo.dev"
@@ -30,7 +35,7 @@ team_members = [
         "role": "프론트엔드 개발 및 UI/UX",
         "intro": "직관적이고 사용자 친화적인 웹 인터페이스를 고민하는 개발자입니다. 프로젝트의 얼굴이 되는 웹 페이지의 디자인과 클라이언트 로직을 책임집니다.",
         "contribution": "Bootstrap을 활용한 반응형 UI/UX 디자인, 다크모드 및 애니메이션 구현, 컴포넌트 기반 아키텍처 설계",
-        "photo": "https://randomuser.me/api/portraits/men/44.jpg", # 가상 인물 사진(남)
+        "photo": "/static/img/member2.png",
         "github": "https://github.com/parkhyunjun",
         "email": "hyunjun@example.com",
         "portfolio": "https://hyunjun.design"
@@ -45,7 +50,7 @@ team_members = [
         "role": "데이터베이스 설계 및 데이터 처리",
         "intro": "데이터의 흐름을 분석하고 구조화하는 것을 좋아합니다. 프로젝트 내 DB 스키마 설계 및 효율적인 데이터 파이프라인 구축을 맡고 있습니다.",
         "contribution": "RDB 스키마 정규화 및 최적화, 대용량 데이터 처리 파이프라인 설계, 데이터 시각화 컴포넌트 연동",
-        "photo": "https://randomuser.me/api/portraits/women/68.jpg", # 가상 인물 사진(여)
+        "photo": "/static/img/member3.png",
         "github": "https://github.com/Yeomin-Yim",
         "email": "yeomin@example.com",
         "portfolio": "https://yeomin.data"
@@ -60,25 +65,36 @@ team_members = [
         "role": "인프라 구축 및 배포 관리",
         "intro": "안정적인 서비스 운영과 자동화에 관심이 많습니다. 완성된 프로젝트가 Nginx와 연동되어 원활하게 배포될 수 있도록 서버 환경을 구성합니다.",
         "contribution": "Docker 기반의 컨테이너화, Nginx 리버스 프록시 설정, CI/CD 파이프라인 구축 및 무중단 배포 적용",
-        "photo": "https://randomuser.me/api/portraits/men/75.jpg", # 가상 인물 사진(남)
+        "photo": "/static/img/member4.png",
         "github": "https://github.com/kimjunsung",
         "email": "junsung@example.com",
         "portfolio": "https://junsung.infra"
     }
 ]
 
+def get_members():
+    if 'members' not in session:
+        session['members'] = DEFAULT_MEMBERS
+    return session['members']
+
+def save_members(members):
+    session['members'] = members
+
+def next_id(members):
+    return max((m['id'] for m in members), default=0) + 1
+
 @app.route('/')
 def index():
-    return render_template('index.html', members=team_members)
+    members = get_members()
+    return render_template('index.html', members=members)
 
-# 팀원 상세 페이지 라우트 추가
 @app.route('/member/<int:member_id>')
 def member_detail(member_id):
-    # ID로 팀원 검색
-    member = next((m for m in team_members if m['id'] == member_id), None)
+    members = get_members()
+    member = next((m for m in members if m['id'] == member_id), None)
     if member:
         return render_template('member.html', member=member)
-    return "팀원을 찾을 수 없습니다.", 404
+    return render_template('404.html'), 404
 
 @app.route('/input')
 def input_page():
@@ -90,20 +106,108 @@ def contact_page():
 
 @app.route('/result', methods=['POST'])
 def result_page():
-    # 입력만 받고 기존 리스트에 추가하지 않음 (고정 유지 목적)
+    name = request.form.get('name', '').strip()
+    student_id = request.form.get('student_id', '').strip()
+    gender = request.form.get('gender', '').strip()
+    department = request.form.get('department', '').strip()
+    languages = request.form.getlist('languages')
+
+    # 서버측 검증
+    errors = []
+    if not name:
+        errors.append('이름을 입력해주세요.')
+    if not student_id:
+        errors.append('학번을 입력해주세요.')
+    if not gender:
+        errors.append('성별을 선택해주세요.')
+    if not department:
+        errors.append('학과를 입력해주세요.')
+    if not languages:
+        errors.append('프로그래밍 언어를 최소 1개 선택해주세요.')
+
+    if errors:
+        for e in errors:
+            flash(e, 'danger')
+        return redirect(url_for('input_page'))
+
+    # 사진 업로드 처리
+    photo_path = '/static/img/default.svg'
+    photo = request.files.get('photo')
+    if photo and photo.filename:
+        from werkzeug.utils import secure_filename
+        filename = secure_filename(f"{student_id}_{photo.filename}")
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        photo_path = f'/static/img/{filename}'
+
+    members = get_members()
     new_member = {
-        "name": request.form.get('name'),
-        "student_id": request.form.get('student_id'),
-        "gender": request.form.get('gender'),
-        "department": request.form.get('department'),
-        "languages": request.form.get('languages'),
+        "id": next_id(members),
+        "name": name,
+        "student_id": student_id,
+        "gender": gender,
+        "department": department,
+        "languages": languages,
+        "role": request.form.get('role', '').strip() or "Team Member",
+        "intro": request.form.get('intro', '').strip() or f"{department} 소속 팀원입니다.",
+        "contribution": request.form.get('contribution', '').strip() or "",
+        "photo": photo_path,
+        "github": request.form.get('github', '').strip() or "#",
+        "email": request.form.get('email', '').strip() or "",
+        "portfolio": request.form.get('portfolio', '').strip() or "#"
     }
+    members.append(new_member)
+    save_members(members)
+    flash(f'{name} 님이 팀에 추가되었습니다!', 'success')
     return render_template('result.html', member=new_member)
 
-# contact.html을 렌더링하기 위한 라우트 추가
-@app.route('/contact')
-def contact_page():
-    return render_template('contact.html')
+@app.route('/member/<int:member_id>/edit', methods=['GET', 'POST'])
+def edit_member(member_id):
+    members = get_members()
+    member = next((m for m in members if m['id'] == member_id), None)
+    if not member:
+        return render_template('404.html'), 404
+
+    if request.method == 'POST':
+        member['name'] = request.form.get('name', '').strip() or member['name']
+        member['student_id'] = request.form.get('student_id', '').strip() or member['student_id']
+        member['gender'] = request.form.get('gender', '').strip() or member['gender']
+        member['department'] = request.form.get('department', '').strip() or member['department']
+        member['role'] = request.form.get('role', '').strip() or member['role']
+        member['intro'] = request.form.get('intro', '').strip() or member['intro']
+        member['contribution'] = request.form.get('contribution', '').strip() or member['contribution']
+        member['github'] = request.form.get('github', '').strip() or member['github']
+        member['email'] = request.form.get('email', '').strip() or member['email']
+        member['portfolio'] = request.form.get('portfolio', '').strip() or member['portfolio']
+        langs = request.form.getlist('languages')
+        if langs:
+            member['languages'] = langs
+
+        photo = request.files.get('photo')
+        if photo and photo.filename:
+            from werkzeug.utils import secure_filename
+            filename = secure_filename(f"{member['student_id']}_{photo.filename}")
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            member['photo'] = f'/static/img/{filename}'
+
+        save_members(members)
+        flash(f'{member["name"]} 님의 정보가 수정되었습니다.', 'success')
+        return redirect(url_for('member_detail', member_id=member_id))
+
+    return render_template('edit.html', member=member)
+
+@app.route('/member/<int:member_id>/delete', methods=['POST'])
+def delete_member(member_id):
+    members = get_members()
+    member = next((m for m in members if m['id'] == member_id), None)
+    if member:
+        members = [m for m in members if m['id'] != member_id]
+        save_members(members)
+        flash(f'{member["name"]} 님이 팀에서 제거되었습니다.', 'warning')
+    return redirect(url_for('index'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

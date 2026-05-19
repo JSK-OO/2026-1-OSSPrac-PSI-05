@@ -1,42 +1,475 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+<style>
+    /* ── Hero Section ── */
+    .hero {
+        position: relative;
+        padding: 6rem 0 4rem;
+        text-align: center;
+        overflow: hidden;
+    }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1000px;
+        height: 1000px;
+        background: radial-gradient(circle, rgba(232,101,26,0.22) 0%, rgba(255,140,66,0.08) 40%, transparent 70%);
+        pointer-events: none;
+        animation: heroPulse 6s ease-in-out infinite alternate;
+    }
+    @keyframes heroPulse {
+        0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+        100% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--orange-subtle);
+        color: var(--orange);
+        font-weight: 600;
+        font-size: 0.82rem;
+        padding: 6px 16px;
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .hero h1 {
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -1.5px;
+        margin-bottom: 1.2rem;
+    }
+    .hero p.lead {
+        max-width: 540px;
+        margin: 0 auto 2rem;
+        color: #777;
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+    [data-bs-theme="dark"] .hero p.lead { color: #999; }
+
+    /* ── Architecture Section ── */
+    .arch-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        border-radius: 20px;
+        padding: 3rem;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+    .arch-section::after {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(232,101,26,0.2) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .arch-flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+    }
+    .arch-node {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        text-align: center;
+        backdrop-filter: blur(4px);
+        transition: all 0.3s;
+    }
+    .arch-node:hover {
+        background: rgba(232,101,26,0.15);
+        border-color: var(--orange);
+        transform: translateY(-4px);
+    }
+    .arch-node i { font-size: 1.5rem; color: var(--orange-light); }
+    .arch-node span { display: block; font-size: 0.82rem; margin-top: 6px; opacity: 0.8; }
+    .arch-arrow { color: var(--orange-light); font-size: 1.2rem; }
+
+    /* ── Team Section ── */
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .section-title h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    /* Staggered cards like KINETIC */
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+    @media (max-width: 992px) {
+        .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 576px) {
+        .team-grid { grid-template-columns: 1fr; }
+    }
+    .team-grid .team-card:nth-child(even) {
+        margin-top: 2.5rem;
+    }
+
+    .team-card {
+        background: var(--bs-body-bg);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-bs-theme="dark"] .team-card {
+        border-color: rgba(255,255,255,0.06);
+    }
+    .team-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    [data-bs-theme="dark"] .team-card:hover {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .team-card .card-photo {
+        width: 100%;
+        aspect-ratio: 4/5;
+        object-fit: cover;
+        filter: grayscale(30%);
+        transition: filter 0.4s;
+    }
+    .team-card:hover .card-photo {
+        filter: grayscale(0%);
+    }
+    .team-card .card-body {
+        padding: 1.2rem 1.2rem 1.5rem;
+    }
+    .role-tag {
+        display: inline-block;
+        color: var(--orange);
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    .team-card h5 {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    .team-card .intro-text {
+        font-size: 0.85rem;
+        color: #888;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .team-card .card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 12px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--orange);
+        text-decoration: none;
+        transition: gap 0.3s;
+    }
+    .team-card .card-link:hover { gap: 10px; }
+
+    /* ── Search & Filter Bar ── */
+    .filter-bar {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .filter-bar .search-input {
+        flex: 1;
+        min-width: 200px;
+        border: 1.5px solid rgba(0,0,0,0.08);
+        border-radius: 50px;
+        padding: 10px 18px 10px 42px;
+        font-size: 0.88rem;
+        background: var(--bs-body-bg);
+        transition: border-color 0.3s;
+    }
+    [data-bs-theme="dark"] .filter-bar .search-input {
+        border-color: rgba(255,255,255,0.08);
+    }
+    .filter-bar .search-input:focus {
+        outline: none;
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(232,101,26,0.1);
+    }
+    .search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+    }
+    .search-wrap i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        font-size: 0.85rem;
+    }
+    .filter-bar select {
+        border: 1.5px solid rgba(0,0,0,0.08);
+        border-radius: 50px;
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        background: var(--bs-body-bg);
+        cursor: pointer;
+    }
+    [data-bs-theme="dark"] .filter-bar select {
+        border-color: rgba(255,255,255,0.08);
+    }
+    .filter-bar select:focus {
+        outline: none;
+        border-color: var(--orange);
+    }
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #999;
+        display: none;
+    }
+
+    /* ── Delete button on card ── */
+    .card-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .team-card { position: relative; }
+    .team-card:hover .card-actions { opacity: 1; }
+    .card-actions .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        backdrop-filter: blur(8px);
+    }
+    .action-btn.edit-btn {
+        background: rgba(255,255,255,0.9);
+        color: var(--orange);
+    }
+    .action-btn.delete-btn {
+        background: rgba(255,255,255,0.9);
+        color: #dc3545;
+    }
+    .action-btn:hover { transform: scale(1.15); }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="text-center mb-5 fade-in-up" style="animation-delay: 0.1s;">
-    <h1 class="fw-bold mb-3 text-primary">오픈소스 소프트웨어 프로젝트</h1>
-    <p class="text-muted fs-5">Flask와 Nginx를 기반으로 한 안정적이고 확장 가능한 웹 서비스를 구축합니다.</p>
-</div>
-
-<!-- 프로젝트 아키텍처 섹션 -->
-<div class="card custom-card mb-5 fade-in-up" style="animation-delay: 0.2s;">
-    <div class="card-body p-4 text-center">
-        <h3 class="fw-bold mb-4">서비스 아키텍처</h3>
-        <!-- 이해를 돕기 위한 아키텍처 이미지 추가 -->
-        
-        <p class="mt-3 text-muted text-justify">
-            클라이언트의 요청은 <strong>Nginx</strong> 웹 서버를 거쳐 리버스 프록시를 통해 로드밸런싱되며, WSGI를 통해 <strong>Python Flask</strong> 애플리케이션 서버로 전달됩니다. 이를 통해 트래픽 분산과 보안을 강화한 스타트업 수준의 백엔드 인프라를 설계했습니다.
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="reveal">
+            <div class="hero-badge">
+                <i class="fas fa-bolt"></i> The Minds Behind OSS Team
+            </div>
+        </div>
+        <h1 class="reveal reveal-delay-1">Meet Our<br><span class="text-orange">Innovative Team</span></h1>
+        <p class="lead reveal reveal-delay-2">
+            Flask와 Nginx를 기반으로 안정적이고 확장 가능한 웹 서비스를 구축하는<br>
+            열정 가득한 개발자 팀을 소개합니다.
         </p>
+        <div class="reveal reveal-delay-3">
+            <a href="#team" class="btn btn-outline-orange">
+                Get to know us <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
     </div>
-</div>
+</section>
 
-<h3 class="fw-bold mb-4 fade-in-up text-center" style="animation-delay: 0.3s;">Meet Our Team</h3>
-
-<!-- 팀원 요약 카드 리스트 -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-    {% for member in members %}
-    <div class="col fade-in-up" style="animation-delay: 0.{{ loop.index + 3 }}s;">
-        <div class="card custom-card h-100 text-center">
-            <img src="{{ member.photo }}" class="card-img-top rounded-circle w-50 mx-auto mt-4 shadow-sm" alt="profile">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-bold">{{ member.name }}</h5>
-                <p class="text-primary fw-semibold small mb-2">{{ member.role }}</p>
-                <div class="mt-auto">
-                    <a href="/member/{{ member.id }}" class="btn btn-outline-primary btn-sm rounded-pill w-100">
-                        상세 프로필 보기
-                    </a>
-                </div>
+<!-- Architecture -->
+<section class="container mb-5">
+    <div class="arch-section reveal">
+        <h4 class="fw-bold text-center mb-2">Service Architecture</h4>
+        <p class="text-center small opacity-75 mb-4">클라이언트 요청부터 백엔드 처리까지의 전체 흐름</p>
+        <div class="arch-flow">
+            <div class="arch-node">
+                <i class="fas fa-globe"></i>
+                <span>Client</span>
+            </div>
+            <i class="fas fa-chevron-right arch-arrow"></i>
+            <div class="arch-node">
+                <i class="fas fa-server"></i>
+                <span>Nginx</span>
+            </div>
+            <i class="fas fa-chevron-right arch-arrow"></i>
+            <div class="arch-node">
+                <i class="fas fa-cogs"></i>
+                <span>WSGI</span>
+            </div>
+            <i class="fas fa-chevron-right arch-arrow"></i>
+            <div class="arch-node">
+                <i class="fab fa-python"></i>
+                <span>Flask</span>
+            </div>
+            <i class="fas fa-chevron-right arch-arrow"></i>
+            <div class="arch-node">
+                <i class="fas fa-database"></i>
+                <span>Database</span>
             </div>
         </div>
     </div>
-    {% endfor %}
+</section>
+
+<!-- Team Cards -->
+<section class="container" id="team">
+    <div class="section-title reveal">
+        <h2>Meet Our Team</h2>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="filter-bar reveal">
+        <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search by name, department, or skill...">
+        </div>
+        <select id="sortSelect">
+            <option value="default">Sort: Default</option>
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="dept">By Department</option>
+        </select>
+    </div>
+
+    <div class="team-grid" id="teamGrid">
+        {% for member in members %}
+        <div class="team-card reveal reveal-delay-{{ loop.index }}"
+             data-name="{{ member.name }}"
+             data-dept="{{ member.department }}"
+             data-langs="{{ member.languages | join(',') }}"
+             data-id="{{ member.id }}">
+            <!-- Edit / Delete -->
+            <div class="card-actions">
+                <a href="/member/{{ member.id }}/edit" class="action-btn edit-btn" title="Edit">
+                    <i class="fas fa-pen"></i>
+                </a>
+                <button class="action-btn delete-btn" title="Delete"
+                        onclick="confirmDelete({{ member.id }}, '{{ member.name }}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <img src="{{ member.photo }}" class="card-photo" alt="{{ member.name }}">
+            <div class="card-body">
+                <span class="role-tag">{{ member.role }}</span>
+                <h5>{{ member.name }}</h5>
+                <p class="intro-text">{{ member.intro }}</p>
+                <a href="/member/{{ member.id }}" class="card-link">
+                    View Profile <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="no-results" id="noResults">
+        <i class="fas fa-search fa-2x mb-3 text-orange"></i>
+        <p class="fw-semibold">No matching members found.</p>
+    </div>
+</section>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius: 16px; border: none;">
+            <div class="modal-body text-center p-4">
+                <div style="width:50px;height:50px;border-radius:50%;background:rgba(220,53,69,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                    <i class="fas fa-trash" style="color:#dc3545;font-size:1.2rem;"></i>
+                </div>
+                <h6 class="fw-bold mb-2">Delete Member</h6>
+                <p class="text-muted small mb-3"><span id="deleteName"></span> will be removed from the team.</p>
+                <form id="deleteForm" method="POST">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm flex-fill" style="border-radius:50px;border:1px solid #ddd;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-sm flex-fill" style="border-radius:50px;">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ── Delete confirmation ──
+    function confirmDelete(id, name) {
+        document.getElementById('deleteName').textContent = name;
+        document.getElementById('deleteForm').action = '/member/' + id + '/delete';
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+
+    // ── Search & Filter ──
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const grid = document.getElementById('teamGrid');
+    const noResults = document.getElementById('noResults');
+
+    function filterAndSort() {
+        const query = searchInput.value.toLowerCase().trim();
+        const cards = [...grid.querySelectorAll('.team-card')];
+        let visible = 0;
+
+        cards.forEach(card => {
+            const name = card.dataset.name.toLowerCase();
+            const dept = card.dataset.dept.toLowerCase();
+            const langs = card.dataset.langs.toLowerCase();
+            const match = !query || name.includes(query) || dept.includes(query) || langs.includes(query);
+            card.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+
+        noResults.style.display = visible === 0 ? 'block' : 'none';
+
+        // Sort
+        const sort = sortSelect.value;
+        const visibleCards = cards.filter(c => c.style.display !== 'none');
+        if (sort === 'name-asc') {
+            visibleCards.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name, 'ko'));
+        } else if (sort === 'name-desc') {
+            visibleCards.sort((a, b) => b.dataset.name.localeCompare(a.dataset.name, 'ko'));
+        } else if (sort === 'dept') {
+            visibleCards.sort((a, b) => a.dataset.dept.localeCompare(b.dataset.dept, 'ko'));
+        }
+        visibleCards.forEach(card => grid.appendChild(card));
+    }
+
+    searchInput.addEventListener('input', filterAndSort);
+    sortSelect.addEventListener('change', filterAndSort);
+</script>
 {% endblock %}
