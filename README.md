@@ -26,12 +26,28 @@
 
 <div align="center">
 
-| 이름 | 기여 내용 |
-| :---: | :--- |
-| **김양우**<br>(팀장) | 역할 분담 및 프로젝트 총괄 · 방문자 메시지 작성 기능 구현 · 최종 발표 진행 |
-| **김준성** | 웹페이지 프로토타입 제작 · Profile CRUD 기능 제안 · 기능 검토 및 피드백 · Docker 이미지 배포 |
-| **박현준** | 멤버 CRUD · 사진 업로드 · 세션 및 알림 기능 구현 · 다크/라이트 모드 · 3D 배경 애니메이션 · 반응형 UI/UX 개발 |
-| **임여민** | 웹페이지 초안 디자인 · 방문자 메시지 삭제 기능 구현 · 프로젝트 README 작성 |
+<table>
+  <tr>
+    <th>이름</th>
+    <th>기여 내용</th>
+  </tr>
+  <tr>
+    <td align="center" nowrap>👑 <b>김양우</b><br>(팀장)</td>
+    <td>역할 분담 및 프로젝트 총괄 · 방문자 메시지 작성 기능 구현 · 최종 발표 진행</td>
+  </tr>
+  <tr>
+    <td align="center" nowrap>🛠 <b>김준성</b></td>
+    <td>웹페이지 프로토타입 제작 · Profile CRUD 기능 제안 · 기능 검토 및 피드백 · Docker 이미지 배포</td>
+  </tr>
+  <tr>
+    <td align="center" nowrap>🎨 <b>박현준</b></td>
+    <td>멤버 CRUD · 사진 업로드 · 세션 및 알림 기능 구현 · 다크/라이트 모드 · 3D 배경 애니메이션 · 반응형 UI/UX 개발</td>
+  </tr>
+  <tr>
+    <td align="center" nowrap>📝 <b>임여민</b></td>
+    <td>웹페이지 초안 디자인 · 방문자 메시지 삭제 기능 구현 · 프로젝트 README 작성</td>
+  </tr>
+</table>
 
 </div>
 
