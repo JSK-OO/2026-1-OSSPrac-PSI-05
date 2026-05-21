@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    image: zwera/app:latest
+    ports:
+      - "8000:5000"
