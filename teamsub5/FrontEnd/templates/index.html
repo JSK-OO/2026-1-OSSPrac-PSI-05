@@ -1,0 +1,618 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* ── Hero Section ── */
+    .hero {
+        position: relative;
+        min-height: calc(100vh - 72px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--orange-subtle);
+        color: var(--orange);
+        font-weight: 600;
+        font-size: 0.82rem;
+        padding: 6px 16px;
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .hero h1 {
+        font-size: clamp(3rem, 7vw, 5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -2px;
+        margin-bottom: 1.5rem;
+    }
+    .hero p.lead {
+        max-width: 540px;
+        margin: 0 auto 2rem;
+        color: #777;
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+    [data-bs-theme="dark"] .hero p.lead { color: #999; }
+
+    /* ── Architecture Section ── */
+    .arch-section {
+        background: linear-gradient(135deg, #0a0a1a 0%, #111827 40%, #0f2544 100%);
+        border-radius: 24px;
+        padding: 4rem 3rem;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+    .arch-section::before {
+        content: '';
+        position: absolute;
+        top: -150px; left: -150px;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(232,101,26,0.12) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .arch-section::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; right: -100px;
+        width: 350px; height: 350px;
+        background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .arch-title {
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    .arch-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.5;
+    }
+    .arch-flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        margin-top: 2.5rem;
+        position: relative;
+    }
+    .arch-node {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 1.8rem 2rem;
+        text-align: center;
+        backdrop-filter: blur(8px);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        min-width: 110px;
+        position: relative;
+    }
+    .arch-node:hover {
+        background: rgba(232,101,26,0.12);
+        border-color: var(--orange);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(232,101,26,0.15);
+    }
+    .arch-node i {
+        font-size: 2rem;
+        color: var(--orange-light);
+        display: block;
+        margin-bottom: 10px;
+    }
+    .arch-node span {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        opacity: 0.7;
+        letter-spacing: 0.5px;
+    }
+    .arch-connector {
+        display: flex;
+        align-items: center;
+        padding: 0 0.6rem;
+        position: relative;
+    }
+    .arch-connector .line {
+        width: 40px;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(232,101,26,0.1), rgba(232,101,26,0.4), rgba(232,101,26,0.1));
+        position: relative;
+    }
+    .arch-connector .dot {
+        position: absolute;
+        top: -3px;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--orange);
+        box-shadow: 0 0 10px rgba(232,101,26,0.6);
+        animation: connectorDot 2.5s ease-in-out infinite;
+    }
+    @keyframes connectorDot {
+        0%   { left: 0; opacity: 0; }
+        15%  { opacity: 1; }
+        85%  { opacity: 1; }
+        100% { left: calc(100% - 8px); opacity: 0; }
+    }
+    .arch-connector:nth-of-type(2) .dot { animation-delay: 0.5s; }
+    .arch-connector:nth-of-type(3) .dot { animation-delay: 1.0s; }
+    .arch-connector:nth-of-type(4) .dot { animation-delay: 1.5s; }
+    @media (max-width: 768px) {
+        .arch-flow { flex-wrap: wrap; gap: 0.5rem; }
+        .arch-connector .line { width: 20px; }
+        .arch-node { min-width: 80px; padding: 1.2rem 1rem; }
+        .arch-node i { font-size: 1.5rem; }
+    }
+
+    /* ── Team Section Title ── */
+    .section-title {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    .section-title h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    /* ── Full-screen Member Showcase ── */
+    .member-showcase {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Background photo — full section, semi-transparent */
+    .showcase-bg-photo {
+        position: absolute;
+        top: 10%;
+        width: 40%;
+        height: 80%;
+        object-fit: cover;
+        border-radius: 20px;
+        opacity: 0.35;
+        filter: grayscale(30%);
+        pointer-events: none;
+        transition: opacity 1s ease, filter 1s ease;
+        mask-image: linear-gradient(to right, transparent 0%, black 20%, black 70%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 70%, transparent 100%);
+    }
+    /* Photo on left */
+    .member-showcase.photo-left .showcase-bg-photo {
+        left: 5%;
+        mask-image: linear-gradient(to right, black 0%, black 60%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, black 0%, black 60%, transparent 100%);
+    }
+    /* Photo on right */
+    .member-showcase.photo-right .showcase-bg-photo {
+        right: 5%;
+        mask-image: linear-gradient(to left, black 0%, black 60%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to left, black 0%, black 60%, transparent 100%);
+    }
+    .member-showcase.in-view .showcase-bg-photo {
+        opacity: 0.65;
+        filter: grayscale(0%);
+    }
+
+    /* Content layout */
+    .showcase-inner {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+    /* Photo left → info on right */
+    .member-showcase.photo-left .showcase-inner {
+        justify-content: flex-end;
+    }
+    /* Photo right → info on left */
+    .member-showcase.photo-right .showcase-inner {
+        justify-content: flex-start;
+    }
+
+    /* Info side */
+    .showcase-info {
+        max-width: 520px;
+        padding: 2.5rem;
+        background: rgba(15, 15, 15, 0.65);
+        backdrop-filter: blur(16px);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    [data-bs-theme="light"] .showcase-info {
+        background: rgba(255, 255, 255, 0.75);
+        border-color: rgba(0,0,0,0.06);
+    }
+    .showcase-number {
+        font-size: 6rem;
+        font-weight: 900;
+        color: var(--orange);
+        opacity: 0.12;
+        line-height: 1;
+        margin-bottom: -1.5rem;
+        letter-spacing: -4px;
+    }
+    .showcase-name {
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 0.3rem;
+    }
+    .showcase-role {
+        color: var(--orange);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+    }
+    .showcase-dept {
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 1.5rem;
+    }
+    .info-block {
+        margin-bottom: 1.5rem;
+    }
+    .info-block-title {
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: var(--orange);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .info-block p {
+        font-size: 0.9rem;
+        line-height: 1.7;
+        color: #aaa;
+        margin: 0;
+    }
+    [data-bs-theme="light"] .info-block p { color: #666; }
+
+    /* Tech pills */
+    .tech-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .tech-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border: 1px solid rgba(232,101,26,0.2);
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #ccc;
+        background: rgba(232,101,26,0.06);
+        transition: all 0.3s;
+    }
+    [data-bs-theme="light"] .tech-pill { color: #444; }
+    .tech-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .tech-pill i { font-size: 1.1rem; }
+
+    /* Action links */
+    .showcase-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 2rem;
+    }
+    .showcase-actions a {
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(255,255,255,0.12);
+        display: flex; align-items: center; justify-content: center;
+        color: #aaa;
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+    [data-bs-theme="light"] .showcase-actions a {
+        border-color: rgba(0,0,0,0.1);
+        color: #666;
+    }
+    .showcase-actions a:hover {
+        border-color: var(--orange);
+        color: var(--orange);
+        transform: translateY(-3px);
+    }
+
+    /* Divider between members */
+    .member-divider {
+        text-align: center;
+        position: relative;
+        padding: 1rem 0;
+    }
+    .member-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 10%; right: 10%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(232,101,26,0.2), transparent);
+    }
+
+    /* Scroll reveal for showcase */
+    .showcase-info {
+        opacity: 0;
+        transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .member-showcase.photo-left .showcase-info {
+        transform: translateX(60px);
+    }
+    .member-showcase.photo-right .showcase-info {
+        transform: translateX(-60px);
+    }
+    .member-showcase.in-view .showcase-info {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .showcase-bg-photo {
+            width: 100%;
+            opacity: 0.12;
+            mask-image: linear-gradient(to bottom, black 0%, transparent 100%) !important;
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%) !important;
+        }
+        .member-showcase.photo-left .showcase-bg-photo,
+        .member-showcase.photo-right .showcase-bg-photo {
+            left: 0; right: auto;
+            width: 100%;
+        }
+        .showcase-inner { justify-content: center !important; }
+        .showcase-info { max-width: 100%; }
+        .showcase-number { font-size: 4rem; }
+        .showcase-name { font-size: 1.6rem; }
+        .tech-pills { justify-content: center; }
+        .showcase-actions { justify-content: center; }
+        .member-showcase { min-height: auto; padding: 3rem 0; }
+        .member-showcase.photo-left .showcase-info,
+        .member-showcase.photo-right .showcase-info {
+            transform: translateY(40px);
+        }
+        .member-showcase.in-view .showcase-info {
+            transform: translateY(0);
+        }
+    }
+
+    .hero > .container { position: relative; z-index: 1; }
+
+    /* Hero content intro animation */
+    .hero-intro {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-intro-d1 { animation-delay: 0.6s; }
+    .hero-intro-d2 { animation-delay: 0.9s; }
+    .hero-intro-d3 { animation-delay: 1.2s; }
+    .hero-intro-d4 { animation-delay: 1.5s; }
+    @keyframes heroFadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Typing Cursor ── */
+    .typing-cursor {
+        display: inline-block;
+        width: 3px;
+        height: 1em;
+        background: var(--orange);
+        margin-left: 4px;
+        animation: blink 0.8s step-end infinite;
+        vertical-align: text-bottom;
+    }
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-intro hero-intro-d1">
+            <div class="hero-badge">
+                <i class="fas fa-bolt"></i> The Minds Behind OSS Team_PSI
+            </div>
+        </div>
+        <h1 class="hero-intro hero-intro-d2">Meet Our<br><span class="text-orange" id="typingTarget">Innovative Team</span><span class="typing-cursor" id="typingCursor"></span></h1>
+        <p class="lead hero-intro hero-intro-d3">
+            Flask와 Nginx를 기반으로 안정적이고 확장 가능한 웹 서비스를 구축하는<br>
+            열정 가득한 개발자 팀을 소개합니다.
+        </p>
+        <div class="hero-intro hero-intro-d4">
+            <a href="#team" class="btn btn-outline-orange">
+                Get to know us <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- Architecture -->
+<section class="container mb-5">
+    <div class="arch-section reveal">
+        <h4 class="arch-title text-center mb-2">Service Architecture</h4>
+        <p class="arch-subtitle text-center mb-0">클라이언트 요청부터 백엔드 처리까지의 전체 흐름</p>
+        <div class="arch-flow">
+            <div class="arch-node reveal reveal-delay-1">
+                <i class="fas fa-globe"></i>
+                <span>Client</span>
+            </div>
+            <div class="arch-connector"><div class="line"><div class="dot"></div></div></div>
+            <div class="arch-node reveal reveal-delay-2">
+                <i class="fas fa-server"></i>
+                <span>Nginx</span>
+            </div>
+            <div class="arch-connector"><div class="line"><div class="dot"></div></div></div>
+            <div class="arch-node reveal reveal-delay-3">
+                <i class="fas fa-cogs"></i>
+                <span>WSGI</span>
+            </div>
+            <div class="arch-connector"><div class="line"><div class="dot"></div></div></div>
+            <div class="arch-node reveal reveal-delay-4">
+                <i class="fab fa-python"></i>
+                <span>Flask</span>
+            </div>
+            <div class="arch-connector"><div class="line"><div class="dot"></div></div></div>
+            <div class="arch-node reveal">
+                <i class="fas fa-database"></i>
+                <span>Database</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Showcase -->
+<section id="team">
+    <div class="container">
+        <div class="section-title reveal">
+            <h2>Meet Our <span class="text-orange">Team</span></h2>
+        </div>
+    </div>
+
+    {% for member in members %}
+    {% if not loop.first %}
+    <div class="member-divider"></div>
+    {% endif %}
+    <div class="member-showcase {{ 'photo-right' if loop.index is even else 'photo-left' }}" data-member-id="{{ member.id }}">
+        <!-- Background photo -->
+        <img src="{{ member.photo }}" class="showcase-bg-photo" alt="{{ member.name }}">
+        <div class="container">
+            <div class="showcase-inner">
+                <div class="showcase-info">
+                    <div class="showcase-number">0{{ loop.index }}</div>
+                    <h2 class="showcase-name">{{ member.name }}</h2>
+                    <div class="showcase-role">{{ member.role }}</div>
+                    <div class="showcase-dept">
+                        <i class="fas fa-building me-1"></i> {{ member.department }} &middot; {{ member.student_id }}
+                    </div>
+
+                    <div class="info-block">
+                        <div class="info-block-title"><i class="fas fa-quote-left"></i> About</div>
+                        <p>{{ member.intro }}</p>
+                    </div>
+
+                    <div class="info-block">
+                        <div class="info-block-title"><i class="fas fa-diagram-project"></i> Contribution</div>
+                        <p>{{ member.contribution }}</p>
+                    </div>
+
+                    {% set tech_map = {
+                        'python': {'icon': 'devicon-python-plain', 'color': '#3776AB', 'label': 'Python'},
+                        'cplusplus': {'icon': 'devicon-cplusplus-plain', 'color': '#00599C', 'label': 'C++'},
+                        'java': {'icon': 'devicon-java-plain', 'color': '#ED8B00', 'label': 'Java'},
+                        'matlab': {'icon': 'devicon-matlab-plain', 'color': '#E16737', 'label': 'MATLAB'},
+                        'javascript': {'icon': 'devicon-javascript-plain', 'color': '#F7DF1E', 'label': 'JavaScript'},
+                        'html5': {'icon': 'devicon-html5-plain', 'color': '#E34F26', 'label': 'HTML5'},
+                        'react': {'icon': 'devicon-react-original', 'color': '#61DAFB', 'label': 'React'},
+                        'sqldeveloper': {'icon': 'fas fa-database', 'color': '#F29111', 'label': 'SQL'},
+                        'r': {'icon': 'devicon-r-plain', 'color': '#276DC3', 'label': 'R'},
+                        'c': {'icon': 'devicon-c-plain', 'color': '#A8B9CC', 'label': 'C'},
+                        'bash': {'icon': 'devicon-bash-plain', 'color': '#4EAA25', 'label': 'Bash'},
+                        'docker': {'icon': 'devicon-docker-plain', 'color': '#2496ED', 'label': 'Docker'}
+                    } %}
+                    <div class="info-block">
+                        <div class="info-block-title"><i class="fas fa-code"></i> Tech Stack</div>
+                        <div class="tech-pills">
+                            {% for lang in member.languages %}
+                            {% set t = tech_map.get(lang, {'icon': 'fas fa-code', 'color': '#E8651A', 'label': lang}) %}
+                            <span class="tech-pill" style="border-color: {{ t.color }}33; background: {{ t.color }}15;">
+                                <i class="{{ t.icon }}" style="color: {{ t.color }};"></i> {{ t.label }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="showcase-actions">
+                        <a href="{{ member.github }}" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="mailto:{{ member.email }}" title="Email"><i class="fas fa-envelope"></i></a>
+                        <a href="{{ member.portfolio }}" target="_blank" title="Portfolio"><i class="fas fa-link"></i></a>
+                        <a href="/member/{{ member.id }}" title="View Profile"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ── Showcase scroll reveal ──
+    const showcaseObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('in-view');
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.member-showcase').forEach(el => showcaseObserver.observe(el));
+
+    // ── Typing Animation ──
+    (function() {
+        const target = document.getElementById('typingTarget');
+        const cursor = document.getElementById('typingCursor');
+        if (!target) return;
+        const words = ['Innovative Team', 'Creative Developers', 'Open Source Builders', 'Future Engineers'];
+        let wordIdx = 0, charIdx = 0, deleting = false;
+
+        function type() {
+            const current = words[wordIdx];
+            if (!deleting) {
+                target.textContent = current.substring(0, charIdx + 1);
+                charIdx++;
+                if (charIdx === current.length) {
+                    setTimeout(() => { deleting = true; type(); }, 2000);
+                    return;
+                }
+                setTimeout(type, 80);
+            } else {
+                target.textContent = current.substring(0, charIdx - 1);
+                charIdx--;
+                if (charIdx === 0) {
+                    deleting = false;
+                    wordIdx = (wordIdx + 1) % words.length;
+                    setTimeout(type, 400);
+                    return;
+                }
+                setTimeout(type, 40);
+            }
+        }
+        // Start after reveal animation completes
+        setTimeout(type, 2000);
+    })();
+
+</script>
+{% endblock %}
