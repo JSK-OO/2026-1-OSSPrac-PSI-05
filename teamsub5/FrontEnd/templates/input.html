@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .input-hero {
+        text-align: center;
+        padding: 4rem 0 2rem;
+    }
+    .input-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+    .input-card {
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: 16px;
+        padding: 2.5rem;
+    }
+    [data-bs-theme="dark"] .input-card {
+        border-color: rgba(255,255,255,0.06);
+    }
+    .input-card .form-control:focus,
+    .input-card .form-select:focus {
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(232,101,26,0.12);
+    }
+    .form-check-input:checked {
+        background-color: var(--orange);
+        border-color: var(--orange);
+    }
+    .lang-check {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    [data-bs-theme="dark"] .lang-check {
+        border-color: rgba(255,255,255,0.1);
+    }
+    .lang-check:has(input:checked) {
+        background: var(--orange-subtle);
+        border-color: var(--orange);
+        color: var(--orange);
+    }
+    .lang-check input { display: none; }
+    .photo-upload {
+        border: 2px dashed rgba(0,0,0,0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .photo-upload:hover {
+        border-color: var(--orange);
+        background: var(--orange-subtle);
+    }
+    .photo-upload img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: none;
+        margin: 0 auto 0.5rem;
+    }
+    .section-label {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--orange);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 650px;">
+    <div class="input-hero reveal">
+        <h1>Join Our <span class="text-orange">Team</span></h1>
+        <p class="text-muted mt-2">Register your profile information below.</p>
+    </div>
+
+    <div class="input-card reveal reveal-delay-1">
+        <form action="/result" method="POST" enctype="multipart/form-data" id="memberForm" novalidate>
+
+            <!-- Basic Info -->
+            <div class="section-label"><i class="fas fa-user me-2"></i>Basic Information</div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Name *</label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+                    <div class="invalid-feedback">Please enter your name.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Student ID *</label>
+                    <input type="text" name="student_id" class="form-control" placeholder="e.g., 20241234" required pattern="[0-9]{8,}">
+                    <div class="invalid-feedback">Please enter a valid student ID (8+ digits).</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Gender *</label>
+                    <div class="d-flex gap-4 mt-1">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="gender" value="Male" id="genderM" required>
+                            <label class="form-check-label" for="genderM">Male</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="gender" value="Female" id="genderF">
+                            <label class="form-check-label" for="genderF">Female</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Department *</label>
+                    <input type="text" name="department" class="form-control" placeholder="e.g., Computer Science" required>
+                    <div class="invalid-feedback">Please enter your department.</div>
+                </div>
+            </div>
+
+            <!-- Role & Skills -->
+            <div class="section-label mt-4"><i class="fas fa-code me-2"></i>Role & Skills</div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Role</label>
+                <input type="text" name="role" class="form-control" placeholder="e.g., Backend Developer">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Programming Languages *</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <label class="lang-check"><input type="checkbox" name="languages" value="Python"> Python</label>
+                    <label class="lang-check"><input type="checkbox" name="languages" value="Java"> Java</label>
+                    <label class="lang-check"><input type="checkbox" name="languages" value="JavaScript"> JavaScript</label>
+                    <label class="lang-check"><input type="checkbox" name="languages" value="C++"> C++</label>
+                    <label class="lang-check"><input type="checkbox" name="languages" value="C"> C</label>
+                    <label class="lang-check"><input type="checkbox" name="languages" value="R"> R</label>
+                    <label class="lang-check"><input type="checkbox" name="languages" value="HTML/CSS"> HTML/CSS</label>
+                </div>
+                <div class="text-danger small mt-1" id="langError" style="display:none;">Please select at least one language.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Introduction</label>
+                <textarea name="intro" class="form-control" rows="2" placeholder="Brief self-introduction"></textarea>
+            </div>
+
+            <!-- Photo -->
+            <div class="section-label mt-4"><i class="fas fa-camera me-2"></i>Profile Photo</div>
+            <label class="photo-upload mb-3" for="photoInput">
+                <img id="photoPreview" alt="preview">
+                <div id="photoPlaceholder">
+                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                    <p class="small text-muted mb-0">Click to upload a photo</p>
+                </div>
+                <input type="file" name="photo" id="photoInput" accept="image/*" style="display:none;">
+            </label>
+
+            <!-- Links -->
+            <div class="section-label mt-4"><i class="fas fa-link me-2"></i>Links (optional)</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold">GitHub</label>
+                    <input type="url" name="github" class="form-control" placeholder="https://github.com/...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="you@example.com">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold">Portfolio</label>
+                    <input type="url" name="portfolio" class="form-control" placeholder="https://...">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-orange w-100 py-2">
+                Submit <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Photo preview
+    document.getElementById('photoInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = document.getElementById('photoPreview');
+                img.src = ev.target.result;
+                img.style.display = 'block';
+                document.getElementById('photoPlaceholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Client-side validation
+    document.getElementById('memberForm').addEventListener('submit', function(e) {
+        this.classList.add('was-validated');
+        const langs = this.querySelectorAll('input[name="languages"]:checked');
+        const langErr = document.getElementById('langError');
+        if (langs.length === 0) {
+            langErr.style.display = 'block';
+            e.preventDefault();
+            return;
+        } else {
+            langErr.style.display = 'none';
+        }
+        if (!this.checkValidity()) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
