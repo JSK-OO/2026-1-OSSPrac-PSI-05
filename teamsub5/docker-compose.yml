@@ -5,7 +5,7 @@ services:                      # 아래는 서비스 정의
    frontapp:                   # service1의 명칭 (팀과제 A2-4 결과물)
       # 서비스 빌드를 위한 정의 내용
       build: ./FrontEnd
-      image: zwera/frontapp:latest
+      image: kimyangwoo/frontapp:latest
       ports: 
          - "80:5000"             # 호스트 80포트를 컨테이너의 5000포트(Flask)로 연결
 
