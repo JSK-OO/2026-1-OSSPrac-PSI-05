@@ -1,6 +1,6 @@
 services:
   app:
     build: .
-    image: zwera/app:latest
+    image: yeominyim/app:latest
     ports:
       - "8000:5000"
